@@ -9,9 +9,9 @@ export declare class AuthService {
     private config;
     constructor(jwt: JwtService, prisma: PrismaService, config: ConfigService);
     signup(dto: AuthDto): Promise<{
-        id: string;
         name: string;
         email: string;
+        id: string;
         count: number;
     }>;
     signin(dto: SigninAuthDto): Promise<{
