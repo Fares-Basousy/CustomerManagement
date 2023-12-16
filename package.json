@@ -1,0 +1,16 @@
+{
+  "name": "messanging",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "installapps":"concurrently \"npm --prefix ./server install 1\" \"npm --prefix ./client install \"",
+    "runapp": "concurrently \"npm --prefix ./server run start 1\" \"npm --prefix ./client run start \"",
+
+
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.1"
+  }
+}
