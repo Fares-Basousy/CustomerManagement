@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -20,7 +21,7 @@ export default function Dashboard({params}) {
     phone:'',address:'', city:'' ,
     country:'',note:''})
     const router = useRouter()
-    useEffect(()=>{
+      useEffect(()=>{
       const getCustomers = async()=>{
        
           const request = await fetch('/api/getcus',
@@ -35,6 +36,7 @@ export default function Dashboard({params}) {
           getCustomers()
         }
           },[status,refresh])
+   
     const handleOperation= (event)=>{
       const {name, value} = event.target;
       setNewCustomer((prev)=>({
@@ -60,20 +62,7 @@ export default function Dashboard({params}) {
         toast.success('Customer Modified')        
       }         
         setRefresh(Math.random())})
-
-
-          data.userId = data.user.id           
-          await fetch('/api/editcus', {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(reqBody),})
-          .then((res)=>{
-           if(res.ok){
-            toast('Customer modified ✅')
-            setRefresh(Math.random())}}).
-            catch((error)=>{
-              setErr(error.message)
-        })}
+}
     const handleSignOut = (event) => {
       event.preventDefault()
       signOut({redirect: true, callbackUrl: "/"}); //need  to look into redirect
@@ -114,6 +103,7 @@ export default function Dashboard({params}) {
             body: JSON.stringify(reqBody),})
           .then(async (res)=>{
             const resBody =await res.json()
+            console.log(resBody)
             if(resBody.statusCode == 403)
             {
               toast.error(resBody.message)
@@ -134,21 +124,18 @@ export default function Dashboard({params}) {
             body: JSON.stringify(reqBody),})
             .then(async (res)=>{
               const resBody =await res.json()
-              console.log(resBody)
-              if(resBody.statusCode == 403)
-              {
-                toast.error(resBody.message)
-                setErr(resBody.message)
-            }
-            else{
-             setCustomers(resBody)
-            }
+                console.log('wtff')
+                console.log(resBody)
+                flushSync(() => {
+                  setCustomers(resBody)
+                });
+          
           })
 
           break
       }
      
-      
+  
 
 }
   return (<div>

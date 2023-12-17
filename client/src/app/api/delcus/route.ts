@@ -8,4 +8,5 @@ export  async function POST(req: Request) {
     headers: {"Content-Type": "application/json",},
     body: JSON.stringify(request),})
     const resBody = await respnse.json()
+    console.log(resBody)
   return NextResponse.json(resBody) }

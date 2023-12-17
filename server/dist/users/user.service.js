@@ -73,7 +73,7 @@ let UserService = class UserService {
                 }
             }
         });
-        return;
+        return { statusCode: 200, status: 'deleted' };
     }
     async modify(newData) {
         const modified = await this.prisma.customer.update({
@@ -112,9 +112,9 @@ let UserService = class UserService {
                 userId: userId,
                 OR: [
                     { id: query },
-                    { email: { search: query ? query.toLocaleLowerCase() : null } },
-                    { name: { search: query ? query?.toLocaleLowerCase() : null } },
-                    { phone: { search: query ? query : null } }
+                    { email: { search: query.toLocaleLowerCase() } },
+                    { name: { search: query.toLocaleLowerCase() } },
+                    { phone: { search: query } }
                 ]
             },
             select: {

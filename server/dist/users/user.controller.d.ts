@@ -16,7 +16,10 @@ export declare class UserController {
         address: string;
         userId: string;
     }>;
-    delete(id: string, userId: string): Promise<void>;
+    delete(id: string, userId: string): Promise<{
+        statusCode: number;
+        status: string;
+    }>;
     modify(newData: CustomerDTO): Promise<{
         id: string;
         name: string;

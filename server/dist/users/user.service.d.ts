@@ -16,7 +16,10 @@ export declare class UserService {
         address: string;
         userId: string;
     }>;
-    delete(userId: string, id: string): Promise<void>;
+    delete(userId: string, id: string): Promise<{
+        statusCode: number;
+        status: string;
+    }>;
     modify(newData: CustomerDTO): Promise<{
         id: string;
         name: string;

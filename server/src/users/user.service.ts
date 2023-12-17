@@ -21,7 +21,7 @@ export class UserService {
 
     const createdCustomer =  await this.prisma.customer.create({
       data:{
-        name: customer.name.toLocaleLowerCase(),
+        name: customer.name,
         email: customer.email.toLocaleLowerCase(),
         phone : customer.phone,
         gender : customer.gender,
@@ -62,7 +62,7 @@ export class UserService {
         count:{
           decrement:1
         }}})
-    return 
+    return {statusCode:200,status:'deleted'}
    }
 
    async modify(newData:CustomerDTO){ //add user idd too
@@ -104,9 +104,9 @@ export class UserService {
         userId: userId,
         OR:[
             {id:query},
-            {email:{search : query?query.toLocaleLowerCase():null}},
-            {name:{search : query?query?.toLocaleLowerCase():null}},
-            {phone:{search : query?query:null}}
+            {email:{search : query.toLocaleLowerCase()}},
+            {name:{search : query.toLocaleLowerCase()}},
+            {phone:{search : query}}
         ]
       },
       select:{
