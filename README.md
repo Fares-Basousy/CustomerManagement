@@ -11,19 +11,23 @@ DATABASE_URI data can be get from the docker compose file
   ```
   docker compose up dev-db
   ```
-5 change back to the main dir 
+5 migrate current database schema
   ```
-  cd ..
+  npx prisma migrate dev
   ```
-6 install reqs
+6 change back to the main dir 
+  ```
+  cd 
+  ```
+7 install reqs
 ```
 npm install
 ```
-6 install boths apps reqs simultaneously
+8 install boths apps reqs simultaneously
 ```
 npm run installapps
 ```
-6 run both apps simultaneously
+9 run both apps simultaneously
 ```
 npm run runapp
 ```
