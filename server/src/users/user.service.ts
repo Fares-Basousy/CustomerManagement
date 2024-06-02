@@ -1,6 +1,7 @@
 import { Injectable, ForbiddenException} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CustomerDTO } from './dto/customerdto';
+import { Customer } from '@prisma/client';
   
 @Injectable()
 export class UserService {
@@ -98,16 +99,12 @@ export class UserService {
    }
 
    async lookup(userId:string,query:any,){
-    const results = this.prisma.customer.findMany({
+    let results : any  = await this.prisma.customer.findFirst({
       
       where: {
         userId: userId,
-        OR:[
-            {id:query},
-            {email:{search : query.toLocaleLowerCase()}},
-            {name:{search : query.toLocaleLowerCase()}},
-            {phone:{search : query}}
-        ]
+        id:query
+        
       },
       select:{
         name:true,
@@ -119,10 +116,42 @@ export class UserService {
         country:true,
         city:true,
         address:true,
-        note:true, 
+        note:true,
+        userId:true 
       }
     })
-    return results
+    if(results){
+      console.log(query)
+      console.log(results)
+    return [results]}
+    else{
+      results = this.prisma.customer.findMany({
+      
+        where: {
+          userId: userId,
+      OR:[
+        {id:query},
+        {email:{search : query.toLocaleLowerCase()}},
+        {name:{search : query.toLocaleLowerCase()}},
+        {phone:{search : query}}
+    ]
+  
+        },
+        select:{
+          name:true,
+          gender:true,
+          status:true,
+          id:true,
+          email:true,
+          phone:true,
+          country:true,
+          city:true,
+          address:true,
+          note:true,
+          userId:true  
+        }
+      })
+    }
 
    }
 

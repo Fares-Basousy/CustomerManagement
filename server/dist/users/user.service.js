@@ -29,7 +29,7 @@ let UserService = class UserService {
             throw new common_1.ForbiddenException('This customer is already registered');
         const createdCustomer = await this.prisma.customer.create({
             data: {
-                name: customer.name.toLocaleLowerCase(),
+                name: customer.name,
                 email: customer.email.toLocaleLowerCase(),
                 phone: customer.phone,
                 gender: customer.gender,
@@ -107,15 +107,10 @@ let UserService = class UserService {
         return { customer: customers, count: count.count };
     }
     async lookup(userId, query) {
-        const results = this.prisma.customer.findMany({
+        let results = await this.prisma.customer.findFirst({
             where: {
                 userId: userId,
-                OR: [
-                    { id: query },
-                    { email: { search: query.toLocaleLowerCase() } },
-                    { name: { search: query.toLocaleLowerCase() } },
-                    { phone: { search: query } }
-                ]
+                id: query
             },
             select: {
                 name: true,
@@ -128,9 +123,40 @@ let UserService = class UserService {
                 city: true,
                 address: true,
                 note: true,
+                userId: true
             }
         });
-        return results;
+        if (results) {
+            console.log(query);
+            console.log(results);
+            return [results];
+        }
+        else {
+            results = this.prisma.customer.findMany({
+                where: {
+                    userId: userId,
+                    OR: [
+                        { id: query },
+                        { email: { search: query.toLocaleLowerCase() } },
+                        { name: { search: query.toLocaleLowerCase() } },
+                        { phone: { search: query } }
+                    ]
+                },
+                select: {
+                    name: true,
+                    gender: true,
+                    status: true,
+                    id: true,
+                    email: true,
+                    phone: true,
+                    country: true,
+                    city: true,
+                    address: true,
+                    note: true,
+                    userId: true
+                }
+            });
+        }
     }
 };
 exports.UserService = UserService;

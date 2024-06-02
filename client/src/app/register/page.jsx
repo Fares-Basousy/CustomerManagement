@@ -4,8 +4,6 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form"
 export default function Register() {
-    const [display,setDisplay] = useState(true)
-    const [data,setData]  = useState({name:"",email:"",password:""})
     const [err,setErr] = useState('')
     const router = useRouter()
     const {register,handleSubmit} = useForm()

@@ -35,11 +35,11 @@ export declare class UserController {
     }>;
     getall(id: string, page: number): Promise<{
         customer: {
-            name: string;
-            email: string;
             id: string;
+            name: string;
             status: string;
             gender: string;
+            email: string;
             phone: string;
             city: string;
             country: string;
@@ -48,16 +48,5 @@ export declare class UserController {
         }[];
         count: number;
     }>;
-    lookup(userid: string, query?: string): Promise<{
-        name: string;
-        email: string;
-        id: string;
-        status: string;
-        gender: string;
-        phone: string;
-        city: string;
-        country: string;
-        note: string;
-        address: string;
-    }[]>;
+    lookup(userid: string, query?: string): Promise<any[]>;
 }

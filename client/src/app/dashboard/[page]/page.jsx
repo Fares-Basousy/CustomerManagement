@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import Row from '../../../components/Row';
 import { signOut } from 'next-auth/react';
 export default function Dashboard({params}) {
-  const { data, status } = useSession()
+  const { data: session, status } = useSession()
     const [customers,setCustomers]= useState([])
     const [refresh,setRefresh] = useState()
     const [showAdd,setShowAdd] = useState(false)
@@ -23,11 +23,10 @@ export default function Dashboard({params}) {
     const router = useRouter()
       useEffect(()=>{
       const getCustomers = async()=>{
-       
           const request = await fetch('/api/getcus',
           {method: "POST",
           headers: {"Content-Type": "application/json" },
-          body:JSON.stringify({id:data?.user.id,page:Number.parseInt(params.page)})})
+          body:JSON.stringify({id:session?.user.id,page:Number.parseInt(params.page)})})
           const resBody = await request.json()
           setCustomers(resBody.customer)
           setCount(resBody.count)
@@ -46,7 +45,7 @@ export default function Dashboard({params}) {
     }
     const editCustomer = async (editData)=>{
       const reqBody = editData
-      reqBody.userId = data.user.id 
+      reqBody.userId = session.user.id 
       await fetch('/api/editcus', {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -74,7 +73,7 @@ export default function Dashboard({params}) {
       switch (operation){
         case 'addCus':
           reqBody = newCustomer
-          reqBody.userId = data.user.id 
+          reqBody.userId = session.user.id 
           await fetch('/api/addcus', {
             method: "POST",
             headers: {"Content-Type": "application/json"},
@@ -96,14 +95,13 @@ export default function Dashboard({params}) {
             setRefresh(Math.random())})
           break
         case 'del':
-          reqBody = {id:rem,userId:data.user.id}  
+          reqBody = {id:rem,userId:session.user.id}  
           await fetch('/api/delcus', {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(reqBody),})
           .then(async (res)=>{
             const resBody =await res.json()
-            console.log(resBody)
             if(resBody.statusCode == 403)
             {
               toast.error(resBody.message)
@@ -117,20 +115,15 @@ export default function Dashboard({params}) {
           )
           break
         case 'search':
-          reqBody = {query:query, userId:data.user.id}  
-          await fetch('/api/search', {
+          reqBody = {query:query, userId:session.user.id}  
+          const res = await  fetch('/api/search', {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(reqBody),})
-            .then(async (res)=>{
-              const resBody =await res.json()
-                console.log('wtff')
-                console.log(resBody)
-                flushSync(() => {
-                  setCustomers(resBody)
-                });
+          const resBody = await res.json()
+          setCustomers([])
+          setCustomers(resBody)
           
-          })
 
           break
       }
@@ -146,7 +139,7 @@ export default function Dashboard({params}) {
 
 <div className="navbar bg-base-100 justify-between">
   <div>
-    <div className="normal-case text-xl" href='/home'> <strong>{`Hello ${data?data.user.name:''}`}</strong></div>
+    <div className="normal-case text-xl" href='/home'> <strong>{`Hello ${session?session.user.name:''}`}</strong></div>
   </div>
     
   <form id='search' onSubmit={handleSubmit} name='search' className='flex justify-evenly'>
